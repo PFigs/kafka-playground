@@ -18,7 +18,7 @@ services:
             context: .
         depends_on:
             - landoop
-        command: ["python", "create_topics.py"]
+        command: ["python", "-u", "create_topics.py"]
 
     producer:
         container_name: producer
@@ -31,7 +31,7 @@ services:
         depends_on:
             - creator
             - landoop
-        command: ["python", "producer.py"]
+        command: ["python", "-u", "producer.py"]
 
     consumer:
         container_name: consumer
@@ -44,7 +44,7 @@ services:
         depends_on:
             - producer
             - landoop
-        command: ["python", "consumer.py"]
+        command: ["python", "-u", "consumer.py"]
 
     plotter:
         container_name: plotter
@@ -58,7 +58,7 @@ services:
             - producer
             - consumer
             - landoop
-        command: ["python", "plotter.py"]
+        command: ["python", "-u", "plotter.py"]
 
 
 volumes:

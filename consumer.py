@@ -1,12 +1,33 @@
 """
-    Kafka consumer based on
-    https://github.com/confluentinc/confluent-kafka-python
+    Kafka consumer
+    ==============
+
+    Takes that from the topics defined in context.py and
+    for each of them launches a process.
+
+    Each process exchanges the events/records with the root
+    process, which is then responsible for storing them
+    to a database as well as process them into an histogram
+    topic.
+
+    This seems to be what the streams API in kafka is all about.
+
+    Based on:
+    https://github.com/dpkp/kafka-python
 """
 
 import multiprocessing
 import json
 import math
-from context import topics, Serializer, HistClient, DataStore, measurements, client_id, wait_for_it
+from context import (
+    topics,
+    Serializer,
+    HistClient,
+    DataStore,
+    measurements,
+    client_id,
+    wait_for_it,
+)
 from kafka import KafkaProducer
 
 

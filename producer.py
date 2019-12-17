@@ -1,10 +1,22 @@
 """
-    Kafka producer based on
-    https://github.com/confluentinc/confluent-kafka-python
+    Kafka producer
+    ==============
+
+    For each topic defined within context.py, the producer
+    takes the array of valid measurements and picks a
+    random value from it.
+
+    This is a very simple mock example and it would be
+    straighforward to interact with a stream, transform
+    it and push it to a kafka stream.
+
+    Based on:
+    https://github.com/dpkp/kafka-python
 """
 
 import json
 import time
+import random
 import datetime
 from kafka import KafkaProducer
 from context import (
@@ -16,7 +28,6 @@ from context import (
     PRODUCTION_ITEMS,
     PRODUCTION_DELTA,
 )
-import random
 
 
 def task_2():

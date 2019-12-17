@@ -1,3 +1,12 @@
+"""
+    Context
+    =======
+
+    Contains classes and useful variables that are
+    shared among the example scripts
+
+"""
+
 import datetime
 import enum
 import json
@@ -15,11 +24,13 @@ from kafka import KafkaConsumer
 PRODUCTION_ITEMS = 5000
 PRODUCTION_DELTA = 1
 
+# client id
 client_id = "silvap"
 
 # Topics and their value range
 topics = ["humidity", "temperature", "pressure"]
 
+# measurement ranges
 measurements = dict()
 measurements["temperature"] = range(-25, 25, 1)
 measurements["pressure"] = range(800, 1200, 100)
@@ -163,7 +174,8 @@ class DataStore:
 
 
 def wait_for_it(host="localhost", port=9092, timeout=1):
-    # Socket Initialization
+    """ Simple method that waits for a target socket to be available """
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     while True:

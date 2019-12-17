@@ -1,6 +1,18 @@
 """
-    Kafka consumer based on
-    https://github.com/confluentinc/confluent-kafka-python
+    Plotter
+    =======
+
+    Simple consumer that retrieves the current
+    histogram counts & bin edges and plots
+    them on a terminal.
+
+    It would be easier to replace this with a
+    graphical tool such as matplotlib or pandas
+    for more interesting graphics.
+
+    The choice here was done in order to allow
+    for easy previews when running within
+    a container.
 """
 
 from context import HistClient, wait_for_it

@@ -1,3 +1,8 @@
+"""
+   Script to view the content of the sqlite database
+   for all the measurement databases.
+"""
+
 import sqlite3
 from context import topics
 

@@ -1,10 +1,21 @@
 """
-    Kafka topic creation based on
-    https://github.com/confluentinc/confluent-kafka-python
+    Kafka topic creation
+    ====================
+
+    Takes that from the topics defined in context.py and
+    for creates a topic for each of them.
+
+    In addition to the topics in the context.py, it also
+    creates the histogram topics (measurement appended by
+    hist)
+
+    Based on:
+    https://github.com/dpkp/kafka-python
 """
+
 import kafka
-from context import topics, client_id, Client, wait_for_it
 from kafka.admin import NewTopic
+from context import topics, client_id, Client, wait_for_it
 
 
 def task_1():

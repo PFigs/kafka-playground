@@ -81,20 +81,24 @@ Install the dependencies with
 ### Setup
 
 Once the requirements are met, you can execute the example
-scripts. The first script to execute should be the create
-topics. Afterwards you should launch the consumer and then
-the producer. If you wish to view the realtime histogram,
+scripts in the following order:
+
+1. [create_topics.py][create_topics]
+2. [consumer.py][consumer]
+3. [producer.py][producer]
+
+If you wish to view the realtime histogram,
 you can rely on the plotter script to display a scatter
 plot with the current values of the histogram.
 
-Each script is executed with
+Each script is executed using
 
         python <script name>
 
 If you wish to launch kafka and all the services, please build
 the container and launch the services using docker-compose as
 
-        docker-compose up -d
+        docker-compose up -d [--build] [--force-recreate]
 
 [context]: ./context.py
 

@@ -100,6 +100,9 @@ the container and launch the services using docker-compose as
 
         docker-compose up -d [--build] [--force-recreate]
 
+## LICENSE
+[MIT License, Copyright 2019 PFigs][LICENSE]
+
 [context]: ./context.py
 
 [create_topics]: ./create_topics.py
@@ -113,3 +116,5 @@ the container and launch the services using docker-compose as
 [viewdb]: ./view_database.py
 
 [darksky]: https://darksky.net/dev/docs#api-request-types
+
+[LICENSE]: ./LICENSE

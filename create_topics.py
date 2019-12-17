@@ -2,8 +2,8 @@
     Kafka topic creation based on
     https://github.com/confluentinc/confluent-kafka-python
 """
-
-from context import topics, client_id, Client
+import kafka
+from context import topics, client_id, Client, wait_for_it
 from kafka.admin import NewTopic
 
 
@@ -25,18 +25,27 @@ def task_1():
     if missing_topics:
 
         kafka_admin = Client(admin=True, client_id=client_id)
-        topic_list = [NewTopic(name=name, num_partitions=1, replication_factor=1) for name in missing_topics]
-        kafka_admin.create_topics(new_topics=topic_list, validate_only=False)
+        topic_list = [
+            NewTopic(name=name, num_partitions=1, replication_factor=1)
+            for name in missing_topics
+        ]
+
+        try:
+            kafka_admin.create_topics(new_topics=topic_list, validate_only=False)
+        except kafka.errors.TopicAlreadyExistsError:
+            pass
 
         # ensure that creation was successful
         existing_topics = kafka_client.topics
         if missing_topics - existing_topics:
-            raise Exception(f"Failed to create all topics {existing_topics - missing_topics}")
+            missing_topics = missing_topics - existing_topics
+            return f"Failed to create all topics {missing_topics}"
 
-    print(f"[OK] missing topics: {missing_topics}")
+    print(f"[OK] created all missing topics: {missing_topics}")
 
     return missing_topics
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    wait_for_it()
     task_1()

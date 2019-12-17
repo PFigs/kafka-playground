@@ -1,17 +1,19 @@
 import datetime
 import enum
 import json
-import numpy
 import sqlite3
+import numpy
 import plotille
+import socket
+import time
 
 from kafka.admin import KafkaAdminClient
 from kafka.client import KafkaClient
-from kafka import KafkaConsumer, KafkaProducer
+from kafka import KafkaConsumer
 
 # Controls the data generation
-PRODUCTION_ITEMS=5000
-PRODUCTION_DELTA=1
+PRODUCTION_ITEMS = 5000
+PRODUCTION_DELTA = 1
 
 client_id = "silvap"
 
@@ -56,8 +58,8 @@ class Client:
             self._client = KafkaClient(bootstrap_servers=connection_string)
         else:
             self._client = KafkaAdminClient(
-                                bootstrap_servers=connection_string,
-                                client_id=client_id)
+                bootstrap_servers=connection_string, client_id=client_id
+            )
 
     @property
     def topics(self):
@@ -90,7 +92,9 @@ class HistClient:
         self._hist = numpy.zeros(nbins)
 
         self._topic = topic
-        self._consumer = KafkaConsumer(self._topic, client_id=client_id, value_deserializer=json.loads)
+        self._consumer = KafkaConsumer(
+            self._topic, client_id=client_id, value_deserializer=json.loads
+        )
 
     def consume(self):
         """
@@ -102,7 +106,11 @@ class HistClient:
         for msg in self._consumer:
             count, _ = numpy.histogram(msg.value["measurement"], bins=self._bin_edges)
             self._hist += count
-            yield {"type": self._topic, self._topic: msg.value, "histogram": {"hist": self._hist, "bin_edges": self._bin_edges} }
+            yield {
+                "type": self._topic,
+                self._topic: msg.value,
+                "histogram": {"hist": self._hist, "bin_edges": self._bin_edges},
+            }
 
     @staticmethod
     def plot(hist, bin_edges):
@@ -136,15 +144,33 @@ class DataStore:
 
         for topic in topics:
             try:
-                self.cursor.execute(f"CREATE TABLE {topic} (date DATETIME, value INTEGER, hist JSON)")
+                self.cursor.execute(
+                    f"CREATE TABLE {topic} (date DATETIME, value INTEGER, hist JSON)"
+                )
             except sqlite3.OperationalError:
                 pass
 
     def store(self, table, data):
         """ Stores the measurement data in the respective table """
-        self.cursor.execute(f"INSERT INTO {table} VALUES (?,?,?)", (
-            data[table]["measurement_time"],
-            data[table]["measurement"],
-            json.dumps(data["histogram"], cls=Serializer)
-            )
+        self.cursor.execute(
+            f"INSERT INTO {table} VALUES (?,?,?)",
+            (
+                data[table]["measurement_time"],
+                data[table]["measurement"],
+                json.dumps(data["histogram"], cls=Serializer),
+            ),
         )
+
+
+def wait_for_it(host="localhost", port=9092, timeout=1):
+    # Socket Initialization
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    while True:
+        try:
+            s.connect((host, port))
+            break
+        except Exception:
+            pass
+        time.sleep(timeout)
+        continue

@@ -7,7 +7,15 @@ import json
 import time
 import datetime
 from kafka import KafkaProducer
-from context import topics, client_id, Serializer, measurements, PRODUCTION_ITEMS, PRODUCTION_DELTA
+from context import (
+    wait_for_it,
+    topics,
+    client_id,
+    Serializer,
+    measurements,
+    PRODUCTION_ITEMS,
+    PRODUCTION_DELTA,
+)
 import random
 
 
@@ -23,21 +31,26 @@ def task_2():
         match it to this problem.
     """
 
-    producer = KafkaProducer(client_id=client_id,
-                             value_serializer=lambda v: json.dumps(v, cls=Serializer).encode('utf-8'))
+    producer = KafkaProducer(
+        client_id=client_id,
+        value_serializer=lambda v: json.dumps(v, cls=Serializer).encode("utf-8"),
+    )
 
     for _ in range(0, PRODUCTION_ITEMS):
         for topic in topics:
-            args = (topic, dict(
-                                measurement=random.choice(measurements[topic]),
-                                measurement_time=datetime.datetime.now()
-                            )
-                    )
+            args = (
+                topic,
+                dict(
+                    measurement=random.choice(measurements[topic]),
+                    measurement_time=datetime.datetime.now(),
+                ),
+            )
             producer.send(*args)
             producer.flush()
             time.sleep(PRODUCTION_DELTA)
             print(f"Sending: {args}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    wait_for_it()
     task_2()

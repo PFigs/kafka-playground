@@ -1,0 +1,65 @@
+version: '3'
+services:
+    landoop:
+        container_name: landoop
+        image: lensesio/fast-data-dev
+        restart: "no"
+        network_mode: host
+        environment:
+            - RUNTESTS=0
+
+    creator:
+        container_name: creator
+        image: kafka-playgroud
+        restart: "no"
+        network_mode: host
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on:
+            - landoop
+        command: ["python", "create_topics.py"]
+
+    producer:
+        container_name: producer
+        image: kafka-playgroud
+        restart: "no"
+        network_mode: host
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on:
+            - creator
+            - landoop
+        command: ["python", "producer.py"]
+
+    consumer:
+        container_name: consumer
+        image: kafka-playgroud
+        restart: "no"
+        network_mode: host
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on:
+            - producer
+            - landoop
+        command: ["python", "consumer.py"]
+
+    plotter:
+        container_name: plotter
+        image: kafka-playgroud
+        restart: "no"
+        network_mode: host
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on:
+            - producer
+            - consumer
+            - landoop
+        command: ["python", "plotter.py"]
+
+
+volumes:
+    storage: {}

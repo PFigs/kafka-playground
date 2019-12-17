@@ -6,7 +6,7 @@
 import multiprocessing
 import json
 import math
-from context import topics, Serializer, HistClient, DataStore, measurements, client_id
+from context import topics, Serializer, HistClient, DataStore, measurements, client_id, wait_for_it
 from kafka import KafkaProducer
 
 
@@ -22,11 +22,13 @@ def task_3_4_5():
     for topic in topics:
         consumer[topic] = HistClient(
             topic=topic,
-            producer_topic=f"hist_{topic}",
             bin_min=min(measurements[topic]),
             bin_max=max(measurements[topic]),
-            nbins=math.ceil(len(measurements[topic])/2))
-        workers[topic] = multiprocessing.Process(target=consumer[topic].start, args=(queue,))
+            nbins=math.ceil(len(measurements[topic]) / 2),
+        )
+        workers[topic] = multiprocessing.Process(
+            target=consumer[topic].start, args=(queue,)
+        )
         workers[topic].start()
 
     # waits for consumed data, publishes it back to kafka and stores it on a database
@@ -37,12 +39,16 @@ def task_3_4_5():
 
         print(f"CONSUMER parent process: {json.dumps(data, cls=Serializer)}")
 
-        producer = KafkaProducer(client_id=client_id, value_serializer=lambda v: json.dumps(v, cls=Serializer).encode('utf-8'))
+        producer = KafkaProducer(
+            client_id=client_id,
+            value_serializer=lambda v: json.dumps(v, cls=Serializer).encode("utf-8"),
+        )
         producer.send(f"hist_{topic}", data["histogram"])
         producer.flush()
 
         database.store(topic, data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    wait_for_it()
     task_3_4_5()

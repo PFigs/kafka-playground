@@ -3,7 +3,7 @@
     https://github.com/confluentinc/confluent-kafka-python
 """
 
-from context import HistClient
+from context import HistClient, wait_for_it
 
 
 class Plotter(HistClient):
@@ -31,5 +31,6 @@ def main():
         print(plot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    wait_for_it()
     main()

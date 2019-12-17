@@ -1,31 +1,33 @@
 # kafka-playground
 
+[![Build Status](https://travis-ci.com/PFigs/kafka-playground.svg?branch=master)](https://travis-ci.com/PFigs/kafka-playground)
+
 A playground to explore kafka concepts
 
 Install Landoop Kafka development environment from <https://github.com/lensesio/fast-data-dev>
 
 ## Task 1
 
-Specify new Kafka topic or topics that handles 
+Specify new Kafka topic or topics that handles
 publishing of temperature, humidity and air pressure.
 
 ### Solution
 
-The topics _temperature, humidity and air pressure_ are defined under 
-[context.py][context]. 
+The topics _temperature, humidity and air pressure_ are defined under
+[context.py][context].
 The array of topics is used by [create_topics.py][create_topics] to first inspect
 if they already exist created and if not it creates them as well as the
 histogram topics.
 
 ## Task 2
 
-Create service that publishes new values on topic(s) specified in task 1. 
+Create service that publishes new values on topic(s) specified in task 1.
 Data can be mocked or from real source, up to you.
 
 ### Solution
 
-Data for the three topics is mocked within [producer.py][producer]. 
-A good extension would be to acquire data from a source such as 
+Data for the three topics is mocked within [producer.py][producer].
+A good extension would be to acquire data from a source such as
 [darksky.net][darksky],
 clean it up and feed it to the current topics.
 
@@ -38,14 +40,14 @@ clean it up and feed it to the current topics.
 ### Solution
 
 These three tasks are tackled with [consumer.py][consumer]. Two additional
-scripts provide additional facilities to inspect the database content 
-(see [view_database.py][viewdb]) and to make a simple scatter 
+scripts provide additional facilities to inspect the database content
+(see [view_database.py][viewdb]) and to make a simple scatter
 plotter based on the  realtime histogram values
 (see [plotter.py][plotter]).
 
 In [consumer.py][consumer] each kafka topic is consumed through an instance
 of the HistClient class. Each of these classes runs on a separate process
-and exchange data with the root process through a syncronous pipe. 
+and exchange data with the root process through a syncronous pipe.
 
 For each message that the main process receives, it is written to a database
 and the histogram values are published under each measurement's histogram
@@ -53,7 +55,7 @@ topic.
 
 ## Overview: installation, code and setup
 
-The application examples in this repository are written 
+The application examples in this repository are written
 in Python +3 and linted with black. The
 main package in use is kafka-python which offers a very simple
 interface to create, publish and subscribe to topics.
@@ -72,7 +74,7 @@ the concept of storing data to a relational database.
 Executing the python code requires at least Python 3 (3.7 is
 the tested and recommended version), as well as PIP.
 
-Install the dependencies with 
+Install the dependencies with
 
         pip install -r requirements.txt
 
